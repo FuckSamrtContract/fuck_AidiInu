@@ -31,27 +31,19 @@ interface IERC20 {
 
     /**
      * 向接收地址转一定的数量的Aidi币
+     * 当成功转移token时，一定要触发Transfer事件
      */
     function transfer(address recipient, uint256 amount) external returns (bool);
 
     /**
-     * 容许的Aidi币数量
+     * 返回spender还能调用owner地址下Aidi币的数量
      */
     function allowance(address owner, address spender) external view returns (uint256);
 
     /**
-     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * IMPORTANT: Beware that changing an allowance with this method brings the risk
-     * that someone may use both the old and the new allowance by unfortunate
-     * transaction ordering. One possible solution to mitigate this race
-     * condition is to first reduce the spender's allowance to 0 and set the
-     * desired value afterwards:
-     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-     *
-     * Emits an {Approval} event.
+     * 批准_spender账户从调用者的账户转移amount个Aidi币。可以分多次转移。
+     * 与transferFrom搭配使用，approve批准之后，调用transferFrom函数来转移token
+     * 当调用approval函数成功时，一定要触发Approval事件
      */
     function approve(address spender, uint256 amount) external returns (bool);
 
@@ -72,39 +64,28 @@ interface IERC20 {
 }
 
 /**
- * @dev Interface for the optional metadata functions from the ERC20 standard.
- *
- * _Available since v4.1._
+ * 主要返回AidiInu的简要信息
  */
 interface IERC20Metadata is IERC20 {
     /**
-     * @dev Returns the name of the token.
+     * 代币名称.
      */
     function name() external view returns (string memory);
 
     /**
-     * @dev Returns the symbol of the token.
+     * 代币symbol.
      */
     function symbol() external view returns (string memory);
 
     /**
-     * @dev Returns the decimals places of the token.
+     * 代币精度.
      */
     function decimals() external view returns (uint8);
 }
 
 
 /**
- * @dev Contract module which provides a basic access control mechanism, where
- * there is an account (an owner) that can be granted exclusive access to
- * specific functions.
- *
- * By default, the owner account will be the one that deploys the contract. This
- * can later be changed with {transferOwnership}.
- *
- * This module is used through inheritance. It will make available the modifier
- * `onlyOwner`, which can be applied to your functions to restrict their use to
- * the owner.
+ * 默认情况下，合约由部署者所有，但AidiInu在后期可以改变合约的所有者，像白皮书书写的那样，放弃合约的所有权
  */
 abstract contract Ownable is Context {
     address private _owner;
@@ -112,7 +93,7 @@ abstract contract Ownable is Context {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     /**
-     * @dev Initializes the contract setting the deployer as the initial owner.
+     * 最开始在部署合约时候，合约由部署者所有.
      */
     constructor () {
         address msgSender = _msgSender();
@@ -121,14 +102,14 @@ abstract contract Ownable is Context {
     }
 
     /**
-     * @dev Returns the address of the current owner.
+     * 当前合约的所有者
      */
     function owner() public view virtual returns (address) {
         return _owner;
     }
 
     /**
-     * @dev Throws if called by any account other than the owner.
+     * 若其他account调用，则返回“Ownable: caller is not the owner”信息
      */
     modifier onlyOwner() {
         require(owner() == _msgSender(), "Ownable: caller is not the owner");
@@ -136,20 +117,15 @@ abstract contract Ownable is Context {
     }
 
     /**
-     * @dev Leaves the contract without owner. It will not be possible to call
-     * `onlyOwner` functions anymore. Can only be called by the current owner.
-     *
-     * NOTE: Renouncing ownership will leave the contract without an owner,
-     * thereby removing any functionality that is only available to the owner.
+     * 将合约的所有者转给黑洞地址，配合transferOwnership使用。
      */
     function renounceOwnership() public virtual onlyOwner {
         emit OwnershipTransferred(_owner, address(0));
-        _owner = address(0);
+        _owner = address(0); #0x0000000000000000000000000000000000000000
     }
 
     /**
-     * @dev Transfers ownership of the contract to a new account (`newOwner`).
-     * Can only be called by the current owner.
+     * 将合约的所有者转给黑洞地址
      */
     function transferOwnership(address newOwner) public virtual onlyOwner {
         require(newOwner != address(0), "Ownable: new owner is the zero address");
