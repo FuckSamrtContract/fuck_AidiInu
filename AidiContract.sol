@@ -144,15 +144,15 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
     mapping (address => bool) private _isExcluded;
     address[] private _excluded;
    
-    uint256 private constant MAX = ~uint256(0);
-    uint256 private constant _tTotal = 100000000000 * 10**6 * 10**9;
-    uint256 private _rTotal = (MAX - (MAX % _tTotal));
+    uint256 private constant MAX = ~uint256(0);                                      # 2的 256次方 减一的 10进制范围 115792089237316195423570985008687907853269984665640564039457584007913129639936
+    uint256 private constant _tTotal = 100000000000 * 10**6 * 10**9;                 # Aidi发行的总量  **是幂运算  10**9(1亿),10**6(100万),100000000000(1000亿)
+    uint256 private _rTotal = (MAX - (MAX % _tTotal));                               # 但是ETH链上是100000000*10**9(1亿)个
     uint256 private _tFeeTotal;
 
     string private _name = 'Aidi Inu';
     string private _symbol = 'AIDI';
     uint8 private _decimals = 9;
-    
+                                  
     uint256 public _maxTxAmount = 100000000 * 10**6 * 10**9;
 
     constructor () {
@@ -201,18 +201,18 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
         _approve(sender, _msgSender(), _allowances[sender][_msgSender()]- amount);
         return true;
     }
-
+    ##
     function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
         _approve(_msgSender(), spender, _allowances[_msgSender()][spender] + addedValue);
         return true;
     }
-
+    ##
     function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
         require(subtractedValue <= _allowances[_msgSender()][spender], "ERC20: decreased allowance below zero");
         _approve(_msgSender(), spender, _allowances[_msgSender()][spender] - subtractedValue);
         return true;
     }
-
+    
     function isExcluded(address account) public view returns (bool) {
         return _isExcluded[account];
     }
