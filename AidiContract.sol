@@ -1,20 +1,8 @@
-/**
- *Submitted for verification at Etherscan.io on 2021-05-26
-*/
-
-// SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.0;
 
 /*
- * @dev Provides information about the current execution context, including the
- * sender of the transaction and its data. While these are generally available
- * via msg.sender and msg.data, they should not be accessed in such a direct
- * manner, since when dealing with meta-transactions the account sending and
- * paying for execution may not be the actual sender (as far as an application
- * is concerned).
- *
- * This contract is only required for intermediate, library-like contracts.
+ *定义接口，通过_msgSender，和_msgData获取合约的调用地址以及调用时候的数据。
  */
 abstract contract Context {
     function _msgSender() internal view virtual returns (address) {
@@ -28,34 +16,26 @@ abstract contract Context {
 }
 
 /**
- * @dev Interface of the ERC20 standard as defined in the EIP.
+ * ERC20 标准接口
  */
 interface IERC20 {
     /**
-     * @dev Returns the amount of tokens in existence.
+     * 代币的总量.
      */
     function totalSupply() external view returns (uint256);
 
     /**
-     * @dev Returns the amount of tokens owned by `account`.
+     * 指定地址拥有Aidi币的数量.
      */
     function balanceOf(address account) external view returns (uint256);
 
     /**
-     * @dev Moves `amount` tokens from the caller's account to `recipient`.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
+     * 向接收地址转一定的数量的Aidi币
      */
     function transfer(address recipient, uint256 amount) external returns (bool);
 
     /**
-     * @dev Returns the remaining number of tokens that `spender` will be
-     * allowed to spend on behalf of `owner` through {transferFrom}. This is
-     * zero by default.
-     *
-     * This value changes when {approve} or {transferFrom} are called.
+     * 容许的Aidi币数量
      */
     function allowance(address owner, address spender) external view returns (uint256);
 
@@ -76,27 +56,17 @@ interface IERC20 {
     function approve(address spender, uint256 amount) external returns (bool);
 
     /**
-     * @dev Moves `amount` tokens from `sender` to `recipient` using the
-     * allowance mechanism. `amount` is then deducted from the caller's
-     * allowance.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
+     * 从sender转移amount个aidi币到recipient
      */
     function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
 
     /**
-     * @dev Emitted when `value` tokens are moved from one account (`from`) to
-     * another (`to`).
-     *
-     * Note that `value` may be zero.
+     * 事件
      */
     event Transfer(address indexed from, address indexed to, uint256 value);
 
     /**
-     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
-     * a call to {approve}. `value` is the new allowance.
+     * 事件
      */
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
