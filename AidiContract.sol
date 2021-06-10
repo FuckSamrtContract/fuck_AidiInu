@@ -185,10 +185,10 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
         _transfer(_msgSender(), recipient, amount);
         return true;
     }
-
+    
     function allowance(address owner, address spender) public view override returns (uint256) {
-        return _allowances[owner][spender];
-    }
+        return _allowances[owner][spender];                                         # spender能使用owner下多少Aidi币
+     }
 
     function approve(address spender, uint256 amount) public override returns (bool) {
         _approve(_msgSender(), spender, amount);
@@ -275,7 +275,7 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
     }
 
     function _approve(address owner, address spender, uint256 amount) private {
-        require(owner != address(0), "ERC20: approve from the zero address");
+        require(owner != address(0), "ERC20: approve from the zero address");             # 不能授权使用 销毁地址的币
         require(spender != address(0), "ERC20: approve to the zero address");
 
         _allowances[owner][spender] = amount;
@@ -347,13 +347,13 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
 
     function _getValues(uint256 tAmount) private view returns (uint256, uint256, uint256, uint256, uint256) {
         (uint256 tTransferAmount, uint256 tFee) = _getTValues(tAmount);
-        uint256 currentRate =  _getRate();
+        uint256 currentRate =  _getRate();                              # 现存币量占发行币量的比例
         (uint256 rAmount, uint256 rTransferAmount, uint256 rFee) = _getRValues(tAmount, tFee, currentRate);
         return (rAmount, rTransferAmount, rFee, tTransferAmount, tFee);
     }
 
     function _getTValues(uint256 tAmount) private pure returns (uint256, uint256) {
-        uint256 tFee = ((tAmount / 100) * 2);
+        uint256 tFee = ((tAmount / 100) * 2);                            # 将tTransferAmount扣除%2的手续费 
         uint256 tTransferAmount = tAmount - tFee;
         return (tTransferAmount, tFee);
     }
