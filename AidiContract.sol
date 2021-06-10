@@ -147,7 +147,7 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
     uint256 private constant MAX = ~uint256(0);                                      # 
     uint256 private constant _tTotal = 100000000000 * 10**6 * 10**9;                 # Aidi发行的总量  **是幂运算  10**9(1亿),10**6(100万),100000000000(1000亿)
     uint256 private _rTotal = (MAX - (MAX % _tTotal));                               # 因为_decimals为9，所以实际_tTotal为：10000万亿个Aidi币
-    uint256 private _tFeeTotal;
+    uint256 private _tFeeTotal;                                                      # 通过交易产生的手续费总额
 
     string private _name = 'Aidi Inu';
     string private _symbol = 'AIDI';
@@ -196,7 +196,7 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
     }
 
     function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
-        _transfer(sender, recipient, amount);
+        _transfer(sender, recipient, amount);                                       # 最重要的transfer函数
         require(amount <= _allowances[sender][_msgSender()], "ERC20: transfer amount exceeds allowance");
         _approve(sender, _msgSender(), _allowances[sender][_msgSender()]- amount);
         return true;
@@ -283,12 +283,12 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
     }
 
     function _transfer(address sender, address recipient, uint256 amount) private {
-        require(sender != address(0), "ERC20: transfer from the zero address");
+        require(sender != address(0), "ERC20: transfer from the zero address");           # address(0)黑洞地址不能进行交易
         require(recipient != address(0), "ERC20: transfer to the zero address");
         require(amount > 0, "Transfer amount must be greater than zero");
         
         if(sender != owner() && recipient != owner()) {
-          require(amount <= _maxTxAmount, "Transfer amount exceeds the maxTxAmount.");
+          require(amount <= _maxTxAmount, "Transfer amount exceeds the maxTxAmount.");    # 除合约拥有者，交易量不能大约发行量的1/1000，限制巨额交易？
         }
             
         if (_isExcluded[sender] && !_isExcluded[recipient]) {
@@ -303,7 +303,7 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
             _transferStandard(sender, recipient, amount);
         }
     }
-
+    ## 标准交易函数
     function _transferStandard(address sender, address recipient, uint256 tAmount) private {
         (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee) = _getValues(tAmount);
         _rOwned[sender] = _rOwned[sender] - rAmount;
