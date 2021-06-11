@@ -137,12 +137,12 @@ abstract contract Ownable is Context {
 
 contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
     
-    mapping (address => uint256) private _rOwned;
-    mapping (address => uint256) private _tOwned;
-    mapping (address => mapping (address => uint256)) private _allowances;
+    mapping (address => uint256) private _rOwned;                                    # realOwned 实际拥有
+    mapping (address => uint256) private _tOwned;                                    # 初始拥有
+    mapping (address => mapping (address => uint256)) private _allowances;           # 可使用的aidi币
 
-    mapping (address => bool) private _isExcluded;
-    address[] private _excluded;
+    mapping (address => bool) private _isExcluded;                                   # 是否是排除地址
+    address[] private _excluded;                                                     # 排除地址合集
    
     uint256 private constant MAX = ~uint256(0);                                      # 
     uint256 private constant _tTotal = 100000000000 * 10**6 * 10**9;                 # Aidi发行的总量  **是幂运算  10**9(1亿),10**6(100万),100000000000(1000亿)
@@ -153,7 +153,7 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
     string private _symbol = 'AIDI';
     uint8 private _decimals = 9;
                                   
-    uint256 public _maxTxAmount = 100000000 * 10**6 * 10**9;
+    uint256 public _maxTxAmount = 100000000 * 10**6 * 10**9;                       # 单笔最大交易数量，初始值是总供应量的1/1000
 
     constructor () {
         _rOwned[_msgSender()] = _rTotal;                                           # 合约创建时候，直接将10000万亿个Aidi币给合约创建者
@@ -182,7 +182,7 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
     }
 
     function transfer(address recipient, uint256 amount) public override returns (bool) {
-        _transfer(_msgSender(), recipient, amount);
+        _transfer(_msgSender(), recipient, amount);                                 # 从合约调用者_msgSender，转移amount个aidi币到recipient地址
         return true;
     }
     
@@ -305,9 +305,9 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
     }
     ## 标准交易函数
     function _transferStandard(address sender, address recipient, uint256 tAmount) private {
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee) = _getValues(tAmount);
-        _rOwned[sender] = _rOwned[sender] - rAmount;
-        _rOwned[recipient] = _rOwned[recipient] + rTransferAmount;       
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee) = _getValues(tAmount);   # tAmount 是发起交易时的币量
+        _rOwned[sender] = _rOwned[sender] - rAmount;                                                                             # 发送方实际交易中减少的币量是rAmount？
+        _rOwned[recipient] = _rOwned[recipient] + rTransferAmount;                                                               # 接收方实际交易中增加的的币量是rAmount？
         _reflectFee(rFee, tFee);
         emit Transfer(sender, recipient, tTransferAmount);
     }
@@ -346,21 +346,21 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
     }
 
     function _getValues(uint256 tAmount) private view returns (uint256, uint256, uint256, uint256, uint256) {
-        (uint256 tTransferAmount, uint256 tFee) = _getTValues(tAmount);
-        uint256 currentRate =  _getRate();                              # 现存币量占发行币量的比例
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee) = _getRValues(tAmount, tFee, currentRate);
-        return (rAmount, rTransferAmount, rFee, tTransferAmount, tFee);
+        (uint256 tTransferAmount, uint256 tFee) = _getTValues(tAmount);                                     # 将要交易的币分为2部分，tTransferAmount和tFee，tFee其实就是返现给持币者的
+        uint256 currentRate =  _getRate();                                                                  # 现存币量占发行币量的比例
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee) = _getRValues(tAmount, tFee, currentRate); # 
+        return (rAmount, rTransferAmount, rFee, tTransferAmount, tFee);                                     # 
     }
 
     function _getTValues(uint256 tAmount) private pure returns (uint256, uint256) {
-        uint256 tFee = ((tAmount / 100) * 2);                            # 将tTransferAmount扣除%2的手续费 
+        uint256 tFee = ((tAmount / 100) * 2);                                                               # 将tTransferAmount扣除%2的手续费 
         uint256 tTransferAmount = tAmount - tFee;
         return (tTransferAmount, tFee);
     }
 
     function _getRValues(uint256 tAmount, uint256 tFee, uint256 currentRate) private pure returns (uint256, uint256, uint256) {
-        uint256 rAmount = tAmount * currentRate;
-        uint256 rFee = tFee * currentRate;
+        uint256 rAmount = tAmount * currentRate;                                                            # 这个函数是按实际币的总量与发行量的总量，重新计算
+        uint256 rFee = tFee * currentRate;                                                                  # rAmount, rTransferAmount, rFee
         uint256 rTransferAmount = rAmount - rFee;
         return (rAmount, rTransferAmount, rFee);
     }
