@@ -144,7 +144,7 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
     mapping (address => bool) private _isExcluded;                                   # 是否是排除地址
     address[] private _excluded;                                                     # 排除地址合集
    
-    uint256 private constant MAX = ~uint256(0);                                      # ~uint256(0)=2**256-1,是uint256所能表示的最大的数
+    uint256 private constant MAX = ~uint256(0);                                      # ~uint256(0)=2**256-1,是uint256所能表示的最大的数 115792089237316195423570985008687907853269984665640564039457584007913129639935
     uint256 private constant _tTotal = 100000000000 * 10**6 * 10**9;                 # Aidi发行的总量  **是幂运算  10**9(1亿),10**6(100万),100000000000(1000亿)
     uint256 private _rTotal = (MAX - (MAX % _tTotal));                               # 因为_decimals为9，所以实际_tTotal为：10000万亿个Aidi币
     uint256 private _tFeeTotal;                                                      # 通过交易产生的手续费总额
