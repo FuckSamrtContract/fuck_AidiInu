@@ -1,11 +1,13 @@
-# fuck_AidiInu
-AidiInu智能合约代码解读
-分红币不可能实现没一次交易精确的1%销毁，%1奖励，因为以太链上的没一次计算都要消耗gas，如果地址成千上万，说明实时奖励要返回到每一个地址。
+# fuck_AidiInu  AidiInu智能合约代码解读
+
+分红币不可能实现每一次交易都进行精确的1%销毁，%1奖励，因为以太链上的每一次计算都要消耗gas，如果地址成千上万，说明实时奖励要返回到每一个地址，计算量也巨大。
+
 所以他是使用另外一个模式：
       Y=K·X   --->   K=Y/X
       Y是_rTotal，真正销毁的是_rTotal，用户拥有的也是_rTotal中的_rMount,然后按系数K折算成Aidi币
       X是_tTotal   
-      用户拥有余额计算方式是：rOwned[account] / currentRate = rOwned[account] / K
+      用户拥有余额计算方式是，_rOwned[account] / currentRate = _rOwned[account] / K
+
 当Y销毁了，回导致K减少，也就是持币会增加。
          
 
