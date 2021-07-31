@@ -89,7 +89,10 @@ interface IERC20Metadata is IERC20 {
  */
 abstract contract Ownable is Context {
     address private _owner;
-
+    
+    /**
+    * 声明一个OwnershipTransferred事件，当合约所有者改变时候触发。
+    ***/
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     /**
