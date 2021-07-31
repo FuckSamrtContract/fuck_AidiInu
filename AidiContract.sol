@@ -140,7 +140,7 @@ abstract contract Ownable is Context {
 
 contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
     
-    mapping (address => uint256) private _rOwned;                                    # realOwned 实际拥有
+    mapping (address => uint256) private _rOwned;                                    # realOwned 实际拥有，存储用户的虚拟数量
     mapping (address => uint256) private _tOwned;                                    # 初始拥有
     mapping (address => mapping (address => uint256)) private _allowances;           # 可使用的aidi币
 
@@ -148,8 +148,8 @@ contract AidiInu is Context, IERC20, IERC20Metadata, Ownable {
     address[] private _excluded;                                                     # 排除地址合集
    
     uint256 private constant MAX = ~uint256(0);                                      # ~uint256(0)=2**256-1,是uint256所能表示的最大的数 115792089237316195423570985008687907853269984665640564039457584007913129639935
-    uint256 private constant _tTotal = 100000000000 * 10**6 * 10**9;                 # Aidi发行的总量  **是幂运算  10**9(1亿),10**6(100万),100000000000(1000亿)
-    uint256 private _rTotal = (MAX - (MAX % _tTotal));                               # 因为_decimals为9，所以实际_tTotal为：10000万亿个Aidi币
+    uint256 private constant _tTotal = 100000000000 * 10**6 * 10**9;                 # 真正的发行量，Aidi发行的总量  **是幂运算  10**9(1亿),10**6(100万),100000000000(1000亿)
+    uint256 private _rTotal = (MAX - (MAX % _tTotal));                               # 最大的一个可以整除 _tTotal 的数，这个数字类似于"虚拟的货币总量"
     uint256 private _tFeeTotal;                                                      # 通过交易产生的手续费总额
 
     string private _name = 'Aidi Inu';
