@@ -10,6 +10,7 @@ AidiInu智能合约代码解读
          
 
 # 具体的关键代码
+```
 sender            	     --->                       recipient
         tAmount= tTransferAmount(98%) + tFee(2%)
 		
@@ -30,8 +31,9 @@ sender            	     --->                       recipient
         _tFeeTotal = _tFeeTotal + tFee;
 		
 		_rOwned[account] / currentRate
-
+```
 # 举例计算
+```
      供应总量     发行总量
      100000      1000
  A:  10000       100
@@ -44,3 +46,4 @@ A交易100给C 清仓,目前currentRate=100
  A:  0           0
  B:  10000       100.2004008
  C:  19800       198.39
+```
